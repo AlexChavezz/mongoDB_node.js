@@ -13,7 +13,7 @@ const user = {
     name: "alexis",
     age: 21,
     country: "mexico",
-    isMarried: false,
+    isMarried: false
 }
 
 
@@ -22,8 +22,9 @@ const connectionToMongoDb = async () => {
         await client.connect();
         console.log("Connected");
         const dbs = await client.db().admin().listDatabases();
-        console.table(dbs.databases);
-        const res = await dbCollection.insertOne(user);
+        // console.table(dbs.databases);
+        // const res = await dbCollection.insertOne(user);
+        const res = await getDocument();
         console.log(res);
         client.close()
             .then(console.log("Desconected"))
@@ -31,7 +32,7 @@ const connectionToMongoDb = async () => {
         console.log(`Error: ${error}`);
     }
 }
-
+connectionToMongoDb();
 // -> CRUD
 
 // -> The first step that you has completed is set your database and your collection
@@ -68,10 +69,9 @@ async function insertOneDocument(document = {}) {
 async function insertManyDocuments(documents = []) {
     try {
         const response = await dbCollection.insertMany(documents);
-        console.log(response);
         // -> Again if all it's ok you see something like
         /*
-            output: 
+            output:
             {
                 acknowledged: true,
                 insertCount: 2,
@@ -81,12 +81,56 @@ async function insertManyDocuments(documents = []) {
                 }
             }
         */
-    }
+            return response;
+        }
     catch (error) {
+        console.log(error);
+    }
+}
+
+/*
+
+    QUERING A MONGODB COLLECTION
+
+*/
+
+// -> To find one or more documents you need to use collection.findOne() to find one or collection.find() to get all exists documents
+
+
+// -> To get only one document you need to follow the next code.
+
+/*
+    COMPARATIVE OPERATORS
+        Some operators that you can use to make a queries are:
+        $gt gratter than 
+        $lt less than
+*/
+
+async function getDocument() {
+    try 
+    {
+        const response = await dbCollection.findOne({/* Here goes a condition*/ age: {$et: 21}});
+        return response;
+    }
+    catch(error)
+    {
         console.log(error);
     }
 }
 
 
 
-connectionToMongoDb();
+
+
+// async function queringAllDocuments(){
+//     try
+//     { 
+//         const response = await dbCollection.findOne({name: "alexis"})
+//         console.log(response);
+//         // response.forEach(console.log)
+//     }
+//     catch(error)
+//     {
+//         console.log(error);
+//     }
+// }
