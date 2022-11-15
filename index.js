@@ -24,10 +24,11 @@ const connectionToMongoDb = async () => {
         const dbs = await client.db().admin().listDatabases();
         // console.table(dbs.databases);
         // const res = await dbCollection.insertOne(user);
-        const res = await getDocument();
-        console.log(res);
+        await queringAllDocuments();
+        //await res.forEach(res=>console.log(res))
+        // console.log(res);
         client.close()
-            .then(console.log("Desconected"))
+        //     .then(console.log("Desconected"))
     } catch (error) {
         console.log(`Error: ${error}`);
     }
@@ -109,7 +110,7 @@ async function insertManyDocuments(documents = []) {
 async function getDocument() {
     try 
     {
-        const response = await dbCollection.findOne({/* Here goes a condition*/ age: {$et: 21}});
+        const response = await dbCollection.findOne({/* Here goes a condition*/ name: "alexis", age: 20});
         return response;
     }
     catch(error)
@@ -119,18 +120,18 @@ async function getDocument() {
 }
 
 
+// -> It is time to quering more than one element. In this case you can use dbCollection.find()
 
-
-
-// async function queringAllDocuments(){
-//     try
-//     { 
-//         const response = await dbCollection.findOne({name: "alexis"})
-//         console.log(response);
-//         // response.forEach(console.log)
-//     }
-//     catch(error)
-//     {
-//         console.log(error);
-//     }
-// }
+async function queringAllDocuments(){
+    try
+    { 
+        const response = await dbCollection.find({name: "alexis"})
+        // console.log(response);
+        // -> print documents
+        await response.forEach(doc => console.log(doc));
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+}
