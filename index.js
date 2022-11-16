@@ -5,8 +5,6 @@ const client = new MongoClient(CONNECTION_STRING);
 
 
 // -> Connection to mongoBD 
-
-
 // -> user 
 
 const user = {
@@ -24,9 +22,10 @@ const connectionToMongoDb = async () => {
         const dbs = await client.db().admin().listDatabases();
         // console.table(dbs.databases);
         // const res = await dbCollection.insertOne(user);
-        await queringAllDocuments();
+        // await removeAllDocuments();
         //await res.forEach(res=>console.log(res))
         // console.log(res);
+        await updateDoc();
         client.close()
         //     .then(console.log("Desconected"))
     } catch (error) {
@@ -122,7 +121,7 @@ async function getDocument() {
 
 // -> It is time to quering more than one element. In this case you can use dbCollection.find()
 
-async function queringAllDocuments(){
+async function queringAllDocuments() {
     try
     { 
         const response = await dbCollection.find({name: "alexis"})
@@ -135,3 +134,91 @@ async function queringAllDocuments(){
         console.log(error);
     }
 }
+
+
+
+/*
+
+    UPDATE DOCUMENTS
+
+*/
+
+// -> As a first step i gonna use dbCollection.updateOne to update one document in a one collection
+
+async function updateDoc() {
+    try
+    {
+        // -> Update one has two arguments collection(<Conditional that references a document to update>, <new values to added>)
+        const response = await dbCollection.updateOne({ name: "alexis" }, { $set: { age: 26 } });
+        /*
+             -> When you excecute the updateOne you should have an output like
+            {
+                {
+                acknowledged: true,
+                modifiedCount: 1,
+                upsertedId: null,
+                upsertedCount: 0,
+                matchedCount: 1
+                }
+            }
+        */
+        console.log(response);
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+}
+
+
+// -> Now to update many documents you'll using collection.updateMany(<argument>, <secoundArgument>)
+//$push
+async function updateDocuments()
+{
+    try{
+        // -> updateMany method can get multpile docs and remove each one 
+        const response = await dbCollection.updateMany({name:"alexis"},{$set: { age: 21 }} )
+        console.log(response);
+    }catch(error)
+    {
+        console.log(error);
+    }
+}
+
+/*
+
+    REMOVE DOCUMENTS
+
+*/
+
+
+async function removeDocument()
+{
+    try 
+    {
+        const response = await dbCollection.deleteOne({computer: "asus"})
+        console.log(response);
+    }
+    catch(error)
+    {
+        console.log(error)
+    }
+}
+
+async function removeAllDocuments()
+{
+    try
+    {
+        const response = await dbCollection.deleteMany({age: 21});
+        console.log(response);
+    }
+    catch(error)
+    {
+        console.log(response);
+    }
+}
+
+
+// TRANSACTIONS 
+
+// -> ... https://www.mongodb.com/docs/manual/core/transactions/
