@@ -25,7 +25,7 @@ const connectionToMongoDb = async () => {
         // await removeAllDocuments();
         //await res.forEach(res=>console.log(res))
         // console.log(res);
-        await updateDoc();
+        await queringAllDocuments();
         client.close()
         //     .then(console.log("Desconected"))
     } catch (error) {
@@ -109,8 +109,10 @@ async function insertManyDocuments(documents = []) {
 async function getDocument() {
     try 
     {
-        const response = await dbCollection.findOne({/* Here goes a condition*/ name: "alexis", age: 20});
-        return response;
+        // const response = await dbCollection.findOne({/* Here goes a condition*/ name: "alexis", age: 20});
+        const response = await dbCollection.findOne({name:{ $eq: "jose"}})
+        console.log(response)
+        // return response;
     }
     catch(error)
     {
@@ -124,7 +126,7 @@ async function getDocument() {
 async function queringAllDocuments() {
     try
     { 
-        const response = await dbCollection.find({name: "alexis"})
+        const response = await dbCollection.find({name: {$eq:"alexis"}})
         // console.log(response);
         // -> print documents
         await response.forEach(doc => console.log(doc));
